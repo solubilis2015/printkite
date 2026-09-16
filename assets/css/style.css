@@ -1,0 +1,494 @@
+/* =========================================================
+   Printkite India — global styles
+   Brochure-inspired: white ground, red rules, thin line-art skyline,
+   red/black/white palette with an orange accent.
+   ========================================================= */
+
+:root {
+  --pk-red: #E8172A;
+  --pk-red-dark: #B8101F;
+  --pk-orange: #F7941D;
+  --pk-pink: #E6007E;
+  --pk-black: #0B0B0B;
+  --pk-ink: #16161A;
+  --pk-grey: #6B6B73;
+  --pk-line: #E6E6EA;
+  --pk-soft: #FFF4F5;
+  /* light-grey grounds used by the alternating sections and the footer */
+  --pk-haze: #F4F4F5;
+  --pk-mist: #F1F1F3;
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+body { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif; color: var(--pk-ink); }
+
+/* No sideways scroll at any width. AOS's fade-left/right start states park an
+   element 100px outside the viewport until it animates in, which otherwise
+   leaves the page scrollable horizontally on phones and tablets.
+   `clip` is preferred over `hidden` because it does not turn the element into
+   a scroll container (so smooth anchor scrolling and sticky keep working);
+   the `hidden` line above it is the fallback for browsers without `clip`. */
+body { overflow-x: hidden; }
+html, body { overflow-x: clip; }
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+
+/* ---------- Utility ---------- */
+.container-pk { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: 20px; }
+.brand-gradient { background: linear-gradient(135deg, var(--pk-orange) 0%, var(--pk-red) 45%, var(--pk-pink) 100%); }
+.text-gradient {
+  background: linear-gradient(100deg, var(--pk-orange), var(--pk-red) 55%, var(--pk-pink));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* Brochure-style section heading: uppercase red label + rule */
+.section-label {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--pk-red);
+}
+.section-label::before { content: ""; width: 28px; height: 2px; background: var(--pk-red); display: block; }
+
+/* bare red rule, used where the heading itself carries the section name */
+.section-rule { display: block; width: 40px; height: 4px; background: var(--pk-red); }
+
+/* Same label, but with the rule as a real element instead of ::before, so GSAP
+   can animate it (pseudo-elements aren't tweenable). */
+.section-label--split::before { content: none; }
+.section-label--split .rule { width: 28px; height: 2px; background: var(--pk-red); display: block; flex: none; }
+
+/* thin line-art skyline band, as in the brochure footer of every page */
+.skyline-band {
+  height: 120px; margin-top: -40px; pointer-events: none;
+  background: url('../images/brand/skyline.png') repeat-x bottom center / auto 120px;
+  opacity: .55;
+}
+.skyline-band--dark { filter: invert(1); opacity: .12; }
+
+/* ---------- Header ---------- */
+.pk-header { transition: box-shadow .3s ease, background-color .3s ease; }
+.pk-header.is-stuck { box-shadow: 0 10px 30px -14px rgba(0,0,0,.28); }
+.pk-header.is-stuck .pk-topbar { display: none; }
+
+.nav-link { position: relative; }
+.nav-link::after {
+  content: ""; position: absolute; left: 0; bottom: -6px; height: 2px; width: 0;
+  background: var(--pk-red); transition: width .25s ease;
+}
+.nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+.pk-drawer { transform: translateX(100%); transition: transform .35s cubic-bezier(.4,0,.2,1); }
+.pk-drawer.open { transform: translateX(0); }
+
+/* ---------- Buttons ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-weight: 600; border-radius: 999px;
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease; }
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--pk-red); color: #fff; padding: 12px 26px; box-shadow: 0 10px 24px -10px rgba(232,23,42,.9); }
+.btn-primary:hover { background: var(--pk-red-dark); }
+.btn-outline { border: 2px solid var(--pk-black); color: var(--pk-black); padding: 10px 24px; }
+.btn-outline:hover { background: var(--pk-black); color: #fff; }
+.btn-dark { background: var(--pk-black); color: #fff; padding: 12px 26px; box-shadow: 0 10px 24px -12px rgba(0,0,0,.9); }
+.btn-dark:hover { background: var(--pk-red); }
+.btn-ghost-light { border: 1.5px solid rgba(255,255,255,.35); color: #fff; padding: 10px 24px; }
+.btn-ghost-light:hover { background: #fff; color: var(--pk-black); }
+
+/* ---------- Brochure card (thin red rule, white fill) ---------- */
+.pk-card { background: #fff; border: 1px solid var(--pk-red); border-radius: 14px; }
+.pk-card--soft { border-color: var(--pk-line); }
+.tile { border-radius: 14px; overflow: hidden; border: 1px solid var(--pk-line); background: #fff;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.tile:hover { transform: translateY(-6px); border-color: rgba(232,23,42,.45); box-shadow: 0 26px 46px -30px rgba(0,0,0,.5); }
+
+/* red circular arrow bullet, as used throughout the brochure */
+.pk-bullet { width: 16px; height: 16px; flex: none; margin-top: 3px; color: var(--pk-red); }
+
+/* ---------- Hero banner (motion lives in assets/js/hero.js) ---------- */
+.pk-banner { position: relative; isolation: isolate; overflow: hidden; }
+.hero-grid { position: relative; z-index: 1; }
+
+/* Bubble field behind the copy. Clipped by .pk-banner's overflow:hidden, so
+   drifting bubbles can never create a horizontal scrollbar. */
+.hero-bubbles { position: absolute; inset: 0; z-index: 0; pointer-events: none; will-change: transform; }
+.pk-bubble { position: absolute; border-radius: 999px; will-change: transform; }
+
+/* One transform owner per wrapper — see the ownership note in hero.js. */
+.hero-media, .hero-media > div, .hero-media > div > div { will-change: transform; }
+
+/* Banner tile keeps a fixed footprint, so swapping in artwork of any native
+   size never shifts the hero layout. Drop a replacement at the path in
+   index.html — it is cropped to fit. */
+.pk-banner-tile { position: relative; aspect-ratio: 4 / 3; display: block; }
+.pk-banner-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* the current hero artwork is square — match it so nothing is cropped away */
+.pk-banner-tile--square { aspect-ratio: 1 / 1; }
+@media (max-width: 480px) { .pk-banner-tile { aspect-ratio: 1 / 1; } }
+
+/* h1 lines, staggered individually by the entrance timeline */
+.hero-line { display: block; }
+
+/* Anti-FOUC: opacity only, so the hero reserves its full layout from the first
+   paint and nothing shifts when the entrance runs. The class is added by an
+   inline script in <head> and removed by hero.js (or a 2.5s failsafe). */
+.pk-hero-pending [data-hero="eyebrow-rule"],
+.pk-hero-pending [data-hero="eyebrow-text"],
+.pk-hero-pending [data-hero="line"],
+.pk-hero-pending [data-hero="word"],
+.pk-hero-pending [data-hero="para"],
+.pk-hero-pending [data-hero="cta"] > *,
+.pk-hero-pending [data-hero="tagline"],
+.pk-hero-pending [data-hero="card"] { opacity: 0; }
+
+/* ---------- About: Vision & Mission ---------- */
+/* min-width:0 on every grid cell stops long words / wide children from
+   forcing the track wider than the viewport on phones and tablets. */
+.pk-about-grid, .pk-about-grid > * , .pk-vm-grid, .pk-vm-grid > * { min-width: 0; }
+.pk-vm-grid { max-width: 100%; }
+.pk-vm-card { max-width: 100%; overflow-wrap: anywhere; }
+
+/* ---------- Why choose us ---------- */
+.pk-why-list { list-style: none; margin: 0; padding: 0; }
+.pk-why-item {
+  display: flex; align-items: flex-start; gap: 14px; min-width: 0;
+  padding: 15px 0; border-bottom: 1px solid var(--pk-line);
+}
+.pk-why-item .mark { width: 10px; height: 10px; flex: none; margin-top: 7px; background: var(--pk-red); }
+.pk-why-item p { font-weight: 600; font-size: 15.5px; line-height: 1.35; overflow-wrap: anywhere; }
+@media (min-width: 640px) {
+  /* drop the rule under the last item of each column */
+  .pk-why-item:nth-last-child(-n+2) { border-bottom: 0; }
+}
+@media (max-width: 639px) { .pk-why-item:last-child { border-bottom: 0; } }
+
+/* ---------- Light-grey section ground (franchise) ---------- */
+.pk-section-grey { background: var(--pk-haze); color: var(--pk-ink); }
+
+/* ---------- Franchise cards (white card, red top rule) ----------
+   Sits on a light-grey ground, so the card needs a hairline on the other
+   three sides to read as a card at all.                                  */
+.pk-franchise-card {
+  background: #fff; color: var(--pk-ink); min-width: 0;
+  border: 1px solid var(--pk-line);
+  border-top: 4px solid var(--pk-red); border-radius: 4px;
+  padding: 26px 22px 22px;
+  display: flex; flex-direction: column;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.pk-franchise-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(232,23,42,.35); border-top-color: var(--pk-red);
+  box-shadow: 0 26px 46px -30px rgba(0,0,0,.45);
+}
+.pk-franchise-card .name { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.pk-franchise-card .area { margin-top: 4px; font-size: 15px; color: var(--pk-grey); }
+.pk-franchise-card .notes { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px; }
+.pk-franchise-card .notes li { display: flex; align-items: flex-start; gap: 11px; font-size: 14px; color: #4A4A52; line-height: 1.4; }
+.pk-franchise-card .notes .mark { width: 8px; height: 8px; flex: none; margin-top: 5px; background: var(--pk-orange); }
+
+/* ---------- Marquee / client logo carousel ---------- */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.marquee__track {
+  display: flex; gap: clamp(20px, 4vw, 44px); width: max-content;
+  animation: marquee 48s linear infinite;
+}
+.marquee:hover .marquee__track, .marquee:focus-within .marquee__track { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (max-width: 767px) { .marquee__track { animation-duration: 32s; } }
+
+.pk-client {
+  flex: none; display: grid; place-items: center; text-align: center;
+  min-width: clamp(140px, 36vw, 190px); height: 104px; padding: 14px 20px;
+  border: 1px solid var(--pk-line); border-radius: 14px; background: #fff;
+  transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+.pk-client:hover { border-color: rgba(232,23,42,.45); box-shadow: 0 18px 32px -24px rgba(0,0,0,.55); transform: translateY(-3px); }
+/* logos keep their brand colours; a touch of lift on hover only */
+.pk-client img { max-width: 100%; max-height: 68px; object-fit: contain; opacity: .92; transition: opacity .25s ease; }
+.pk-client:hover img { opacity: 1; }
+.pk-client .name { font-size: 14.5px; font-weight: 600; color: var(--pk-grey); line-height: 1.25; }
+.pk-client:hover .name { color: var(--pk-red); }
+.pk-client.has-logo .name { display: none; }
+@media (max-width: 480px) { .pk-client { height: 92px; } .pk-client img { max-height: 58px; } }
+
+/* ---------- Static service cover (home "What we do" cards) ----------
+   Same box as .pk-carousel: 4:3, rounded, image cropped to fill.        */
+.pk-cover {
+  position: relative; width: 100%; aspect-ratio: 4 / 3;
+  border-radius: 14px; overflow: hidden; background: #F6F6F8;
+}
+.pk-cover img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .6s ease;
+}
+.tile:hover .pk-cover img { transform: scale(1.04); }
+
+/* ---------- "What we do" grid ----------
+   Flex rather than grid so the five cards wrap into centred rows: the
+   trailing row (2 cards at desktop, 1 at tablet) sits centred instead of
+   being pinned to the left edge. Basis values mirror a 3-/2-/1-column
+   grid with a 24px gutter.                                              */
+.pk-service-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+.pk-service-grid > * { flex: 0 1 100%; min-width: 0; }
+@media (min-width: 768px)  { .pk-service-grid > * { flex: 0 1 calc((100% - 24px) / 2); } }
+@media (min-width: 1024px) { .pk-service-grid > * { flex: 0 1 calc((100% - 48px) / 3); } }
+
+/* ---------- Carousel ---------- */
+.pk-carousel { position: relative; border-radius: 14px; overflow: hidden; background: #F6F6F8; }
+.pk-carousel__viewport { position: relative; width: 100%; aspect-ratio: 4 / 3; }
+.pk-carousel__slide {
+  position: absolute; inset: 0; opacity: 0; transform: scale(1.04);
+  transition: opacity .6s ease, transform .8s ease;
+}
+.pk-carousel__slide.active { opacity: 1; transform: scale(1); }
+.pk-carousel__slide img { width: 100%; height: 100%; object-fit: cover; }
+.pk-carousel__btn {
+  position: absolute; top: 50%; translate: 0 -50%; width: 38px; height: 38px; border-radius: 999px;
+  display: grid; place-items: center; background: rgba(255,255,255,.92); color: var(--pk-black);
+  box-shadow: 0 6px 18px -8px rgba(0,0,0,.6); opacity: 0; transition: opacity .25s ease, background-color .2s ease;
+}
+.pk-carousel:hover .pk-carousel__btn, .pk-carousel:focus-within .pk-carousel__btn { opacity: 1; }
+.pk-carousel__btn:hover { background: var(--pk-red); color: #fff; }
+.pk-carousel__btn.prev { left: 10px; } .pk-carousel__btn.next { right: 10px; }
+/* touch devices never fire hover — keep the arrows on screen there */
+@media (hover: none), (pointer: coarse) {
+  .pk-carousel__btn { opacity: 1; width: 34px; height: 34px; }
+}
+.pk-carousel__dots { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; gap: 6px; justify-content: center; }
+.pk-carousel__dot { width: 7px; height: 7px; border-radius: 999px; background: rgba(255,255,255,.65); transition: all .25s ease; }
+.pk-carousel__dot.active { width: 20px; background: var(--pk-red); }
+
+/* ---------- Service accordion ---------- */
+.acc-item { border: 1px solid var(--pk-line); border-radius: 18px; background: #fff; overflow: hidden;
+  transition: box-shadow .3s ease, border-color .3s ease; }
+.acc-item.open { border-color: var(--pk-red); box-shadow: 0 24px 48px -30px rgba(0,0,0,.35); }
+.acc-trigger { width: 100%; display: flex; align-items: center; gap: 18px; padding: 22px 24px; text-align: left; }
+.acc-icon { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; flex: none; color: #fff; }
+.acc-chevron { transition: transform .3s ease; }
+.acc-item.open .acc-chevron { transform: rotate(180deg); }
+.acc-panel { max-height: 0; overflow: hidden; transition: max-height .45s cubic-bezier(.4,0,.2,1); }
+
+/* Intro paragraph at the top of an open service panel */
+.service-intro {
+  margin: 0 0 18px; padding-bottom: 16px; border-bottom: 1px solid var(--pk-line);
+  font-size: 15px; line-height: 1.7; color: var(--pk-grey); max-width: 68ch;
+}
+
+.service-item {
+  display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left;
+  padding: 9px 12px; border-radius: 10px; font-size: 14.5px; color: #333;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+.service-item:hover { background: var(--pk-soft); color: var(--pk-red); transform: translateX(3px); }
+.service-item .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--pk-red); margin-top: 8px; flex: none; }
+
+/* ---------- Floating WhatsApp button (all pages) ---------- */
+.pk-whatsapp {
+  position: fixed; right: 20px; z-index: 70;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  width: 56px; height: 56px; border-radius: 999px;
+  display: grid; place-items: center; color: #fff; background: #25D366;
+  box-shadow: 0 16px 32px -12px rgba(37,211,102,.85), 0 4px 10px -4px rgba(0,0,0,.35);
+  transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease;
+}
+.pk-whatsapp:hover { transform: translateY(-3px) scale(1.04); background: #1EBE5A; }
+.pk-whatsapp svg { width: 30px; height: 30px; position: relative; z-index: 1; }
+/* soft pulse ring */
+.pk-whatsapp::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: #25D366; opacity: .55; animation: pk-wa-pulse 2.4s ease-out infinite;
+}
+@keyframes pk-wa-pulse {
+  0%   { transform: scale(1);   opacity: .5; }
+  70%  { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+@media (max-width: 480px) { .pk-whatsapp { width: 52px; height: 52px; right: 16px; } .pk-whatsapp svg { width: 27px; height: 27px; } }
+
+/* ---------- Popup ---------- */
+/* sits above the floating WhatsApp button rather than on top of it */
+.pk-popup {
+  position: fixed; right: 20px; z-index: 60; width: 320px; max-width: calc(100vw - 32px);
+  bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  border-radius: 18px; overflow: hidden; background: #fff;
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,.45);
+  transform: translateY(140%); opacity: 0; pointer-events: none;
+  transition: transform .5s cubic-bezier(.22,1,.36,1), opacity .4s ease;
+}
+.pk-popup.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+@media (max-width: 480px) { .pk-popup { right: 16px; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); } }
+
+/* =========================================================
+   Footer — warm brochure banner
+   Light cream/blush ground, 3D art in the outer gutters, four link
+   columns split by hairlines, script accents in the brand hand.
+   ========================================================= */
+.pk-footer {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 8% 100%, rgba(246,158,150,.30) 0%, transparent 55%),
+    radial-gradient(90% 80% at 96% 20%, rgba(247,148,29,.22) 0%, transparent 58%),
+    radial-gradient(70% 70% at 78% 108%, rgba(232,23,42,.16) 0%, transparent 60%),
+    linear-gradient(160deg, #FFFAF8 0%, #FFF2F1 45%, #FFF7F3 100%);
+  color: var(--pk-ink);
+  border-top: 1px solid rgba(232,23,42,.10);
+}
+
+/* ---- decorative art, parked in the gutters either side of the 1200px
+   container. Hidden until there is real room for it, so it can never
+   sit behind the link columns on a laptop.                            ---- */
+.pk-footer-art { display: none; }
+@media (min-width: 1440px) {
+  .pk-footer-art { display: block; position: absolute; z-index: 0; pointer-events: none; user-select: none; }
+  .pk-footer-art--left {
+    left: -30px; bottom: 0; width: 320px; height: 320px; opacity: .55;
+    background: var(--pk-footer-art, url('../images/services/digital-marketing.jpeg')) no-repeat center / contain;
+    -webkit-mask-image: radial-gradient(circle at 42% 62%, #000 40%, rgba(0,0,0,.35) 62%, transparent 76%);
+    mask-image: radial-gradient(circle at 42% 62%, #000 40%, rgba(0,0,0,.35) 62%, transparent 76%);
+  }
+  .pk-footer-art--right { right: 24px; top: 96px; width: 230px; text-align: center; }
+}
+.pk-footer-plane { display: block; width: 92px; margin: 0 auto 6px; }
+.pk-footer-arc { display: block; width: 100%; height: 54px; }
+
+/* ---- script accents ---- */
+.pk-script {
+  font-family: 'Caveat', 'Segoe Script', cursive;
+  font-weight: 700; line-height: 1;
+  background: linear-gradient(100deg, var(--pk-orange), var(--pk-red) 60%, var(--pk-pink));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.pk-script--rule { font-size: 30px; letter-spacing: .02em; white-space: nowrap; }
+.pk-script--corner { font-size: 34px; transform: rotate(-8deg); display: inline-block; }
+
+/* thin gradient hairline that runs off to the right of the script line */
+.pk-footer-scriptline { display: flex; align-items: center; gap: 18px; padding: 6px 0 22px; }
+.pk-footer-scriptline .line {
+  flex: 1; height: 1px; min-width: 0;
+  background: linear-gradient(90deg, rgba(232,23,42,.45), rgba(232,23,42,.10) 70%, transparent);
+}
+
+/* ---- top band ---- */
+.pk-footer-top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 28px; }
+.pk-footer-tagline { margin-top: 14px; max-width: 30rem; color: #4E4E57; font-size: 15px; line-height: 1.65; }
+.pk-footer-badges { display: grid; gap: 16px; align-items: stretch; }
+/* the email is the longer string, so it gets the wider track — that keeps both
+   values on a single line and the two cards' label/value baselines aligned */
+@media (min-width: 640px) { .pk-footer-badges { grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr); } }
+@media (min-width: 1024px) { .pk-footer-badges { width: 640px; } }
+
+.pk-badge {
+  display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+  background: #fff; border: 1px solid rgba(232,23,42,.10); border-radius: 18px;
+  box-shadow: 0 18px 34px -26px rgba(190,60,50,.55);
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.pk-badge:hover {
+  transform: translateY(-3px); border-color: rgba(232,23,42,.38);
+  box-shadow: 0 24px 40px -24px rgba(190,60,50,.7);
+}
+.pk-badge__icon { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; flex: none; }
+.pk-badge__icon--grad { background: linear-gradient(140deg, var(--pk-orange), var(--pk-red) 65%, var(--pk-pink)); color: #fff; }
+.pk-badge__icon--soft { background: #FFF1EE; color: var(--pk-orange); }
+.pk-badge__label { display: block; font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: #9A8F8F; }
+.pk-badge__value { display: block; margin-top: 3px; font-size: 17px; font-weight: 700; color: var(--pk-ink); white-space: nowrap; }
+/* email badge: a notch smaller so the address never breaks across two lines */
+.pk-footer-badges .pk-badge:last-child .pk-badge__value { font-size: 15.5px; }
+@media (max-width: 400px) { .pk-footer-badges .pk-badge:last-child .pk-badge__value { font-size: 13.5px; } }
+
+/* ---- four link columns, split by hairlines ---- */
+.pk-footer-cols { display: grid; gap: 34px; padding: 10px 0 34px; }
+@media (min-width: 640px)  { .pk-footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 40px; } }
+@media (min-width: 1024px) { .pk-footer-cols { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; } }
+@media (min-width: 1024px) {
+  .pk-footer-col { padding-inline: 34px; border-left: 1px solid rgba(232,23,42,.12); }
+  .pk-footer-col:first-child { padding-left: 0; border-left: 0; }
+  .pk-footer-col:last-child { padding-right: 0; }
+}
+.pk-footer-col h4 { font-size: 20px; font-weight: 700; color: var(--pk-ink); }
+/* short gradient rule under each column heading */
+.pk-footer-col h4::after {
+  content: ""; display: block; width: 44px; height: 3px; margin-top: 10px; border-radius: 999px;
+  background: linear-gradient(90deg, var(--pk-red), var(--pk-orange));
+}
+.pk-footer-col ul { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 13px; }
+
+.footer-link { color: #4E4E57; font-size: 15.5px; transition: color .2s ease, padding-left .2s ease; }
+.footer-link:hover { color: var(--pk-red); padding-left: 5px; }
+.footer-muted { color: #4E4E57; }
+.footer-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: #9A8F8F; }
+
+/* Visit us */
+.pk-footer-address { font-style: normal; margin-top: 20px; font-size: 15.5px; line-height: 1.7; color: #4E4E57; }
+.pk-footer-address strong { display: block; color: var(--pk-ink); font-weight: 700; }
+.pk-directions {
+  display: inline-flex; align-items: center; gap: 10px; margin-top: 20px;
+  padding: 11px 20px; border-radius: 999px; font-size: 14.5px; font-weight: 600;
+  background: #FFECEC; color: var(--pk-red); border: 1px solid rgba(232,23,42,.16);
+  transition: background-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.pk-directions:hover { background: var(--pk-red); color: #fff; transform: translateY(-2px); box-shadow: 0 16px 26px -16px rgba(232,23,42,.95); }
+.pk-directions svg { width: 16px; height: 16px; }
+
+/* Get in touch — circular chip + label rows */
+.pk-contact-row { display: flex; align-items: center; gap: 13px; margin-top: 16px; font-size: 15.5px; color: #4E4E57; transition: color .2s ease; }
+/* the email row sits in a narrow column — size it to fit on one line */
+.pk-contact-row .break-all { font-size: 14px; }
+.pk-contact-row:hover { color: var(--pk-red); }
+.pk-contact-chip {
+  width: 34px; height: 34px; border-radius: 999px; flex: none; display: grid; place-items: center;
+  background: #FFECEC; color: var(--pk-red);
+  transition: background-color .25s ease, color .25s ease, transform .25s ease;
+}
+.pk-contact-row:hover .pk-contact-chip { background: var(--pk-red); color: #fff; transform: scale(1.06); }
+
+/* circular social buttons, brand marks in full colour */
+.social-btn {
+  width: 46px; height: 46px; border-radius: 999px; display: grid; place-items: center;
+  background: #fff; box-shadow: 0 10px 20px -12px rgba(120,60,60,.55);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.social-btn svg { width: 24px; height: 24px; }
+.social-btn:hover { transform: translateY(-4px); box-shadow: 0 18px 26px -14px rgba(120,60,60,.75); }
+.social-btn:focus-visible { outline: 2px solid var(--pk-red); outline-offset: 3px; }
+
+/* ---- bottom bar ---- */
+.pk-footer-bottom {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 20px 0 26px; border-top: 1px solid rgba(232,23,42,.12);
+  font-size: 13.5px; color: #6E6E77;
+}
+.pk-footer-slogan { display: flex; align-items: center; gap: 14px; font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: #8A8A93; }
+.pk-footer-slogan .line { width: 92px; height: 3px; border-radius: 999px; background: linear-gradient(90deg, var(--pk-red), var(--pk-orange)); }
+@media (max-width: 639px) { .pk-footer-slogan .line { display: none; } }
+
+/* ---- every word in the footer set bold ----
+   One sweeping rule so anything added here later is bold by default; the
+   column headings stay a step heavier so the hierarchy still reads.      */
+.pk-footer, .pk-footer * { font-weight: 700; }
+.pk-footer h4 { font-weight: 800; }
+
+/* ---------- GSAP cursor glitter (desktop only) ---------- */
+#pkGlitter { position: fixed; inset: 0; z-index: 9999; pointer-events: none; overflow: hidden; }
+.pk-star {
+  position: absolute; pointer-events: none; will-change: transform, opacity;
+  line-height: 1; color: var(--pk-red);
+  text-shadow: 0 0 6px rgba(232,23,42,.55), 0 0 14px rgba(247,148,29,.35);
+}
+.pk-star.gold { color: var(--pk-orange); text-shadow: 0 0 6px rgba(247,148,29,.6), 0 0 16px rgba(232,23,42,.3); }
+.pk-star.ink  { color: #2A2A32; text-shadow: 0 0 8px rgba(0,0,0,.25); }
+
+@media (hover: none), (pointer: coarse) { #pkGlitter { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  /* no scroll: show one static, wrapped row and drop the duplicate copy */
+  .marquee { -webkit-mask-image: none; mask-image: none; }
+  .marquee__track { animation: none; flex-wrap: wrap; width: 100%; justify-content: center; }
+  .pk-client--clone { display: none; }
+  .pk-whatsapp::before { animation: none; opacity: 0; }
+  #pkGlitter { display: none; }
+  * { transition-duration: .01ms !important; }
+}
